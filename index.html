@@ -250,7 +250,7 @@
 
         #gameOver {
             position: absolute;
-            top: 50%;
+            top: 30%;
             left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
@@ -260,6 +260,8 @@
             padding: 30px;
             border-radius: 15px;
             display: none;
+            max-width: 90%;
+            min-width: 300px;
         }
 
         #distance {
@@ -863,16 +865,39 @@
                 
                 // 初期雲をリセット
                 this.initClouds();
-                document.querySelector('.cloud1').style.top = '-100px';
-                document.querySelector('.cloud2').style.top = '-150px';
-                document.querySelector('.cloud3').style.top = '-200px';
+                const cloud1 = document.querySelector('.cloud1');
+                const cloud2 = document.querySelector('.cloud2');
+                const cloud3 = document.querySelector('.cloud3');
+                if (cloud1) cloud1.style.top = '-100px';
+                if (cloud2) cloud2.style.top = '-150px';
+                if (cloud3) cloud3.style.top = '-200px';
                 
                 // 背景を初期位置に戻す
                 this.background.style.transform = 'translateY(0)';
                 this.groundBackground.style.transform = 'translateY(0)';
                 
+                // 手裏剣を初期位置に戻す
+                this.shuriken.style.left = '50%';
+                this.shuriken.style.bottom = '100px';
+                this.shuriken.style.transform = 'translateX(-50%) scale(1)';
+                this.shuriken.querySelector('.shuriken-star').classList.remove('rotating');
+                
+                // 状態をリセット
+                this.distance = 0;
+                this.velocity = 0;
+                this.throwTriggered = false;
+                this.backgroundOffset = 0;
+                this.groundOffset = 0;
+                this.shurikenScale = 1;
+                this.altitude = 0;
+                this.isPlaying = false;
+                
+                // 画面を切り替え
                 this.gameOver.style.display = 'none';
                 this.instructions.style.display = 'block';
+                
+                // 距離表示をリセット
+                this.distanceDisplay.textContent = '距離: 0m';
             }
         }
 
