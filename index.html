@@ -1,4 +1,18 @@
-<!DOCTYPE html>
+<div class="mountain mountain4"></div>
+            <div class="mountain mountain5"></div>
+            <div class="mountain mountain6"></div>
+            <div class="mountain mountain7"></div>
+            <div class="mountain mountain8"></div>
+            <div class="mountain mountain9"></div>
+            <div class="mountain mountain10"></div>
+            <div class="mountain mountain11"></div>
+            <div class="mountain mountain12"></div>
+        </div>
+
+        <!-- 前景の山並み（常に画面下部に表示） -->
+        <div class="mountain mountain1"></div>
+        <div class="mountain mountain2"></div>
+        <div class="mountain mountain3"></div><!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -213,70 +227,119 @@
             z-index: 2;
         }
 
-        /* 山を適切な位置に配置 */
+        /* 手前の山並み（画面下部に常に表示） */
         .mountain1 {
-            left: 10%;
+            position: fixed;
+            left: 0%;
             bottom: 0;
-            border-left: 80px solid transparent;
-            border-right: 80px solid transparent;
-            border-bottom: 120px solid #2d5016;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-bottom: 100px solid #1a3009;
+            z-index: 3;
         }
 
         .mountain2 {
-            left: 40%;
+            position: fixed;
+            left: 25%;
             bottom: 0;
-            border-left: 100px solid transparent;
-            border-right: 100px solid transparent;
-            border-bottom: 150px solid #1a3009;
+            border-left: 120px solid transparent;
+            border-right: 120px solid transparent;
+            border-bottom: 80px solid #2d5016;
+            z-index: 3;
         }
 
         .mountain3 {
-            right: 20%;
+            position: fixed;
+            right: 0%;
             bottom: 0;
-            border-left: 60px solid transparent;
-            border-right: 60px solid transparent;
-            border-bottom: 90px solid #2d5016;
+            border-left: 180px solid transparent;
+            border-right: 180px solid transparent;
+            border-bottom: 120px solid #1a3009;
+            z-index: 3;
         }
 
+        /* 背景の遠い山並み（上方向に配置、スクロールで現れる） */
         .mountain4 {
-            left: 70%;
-            bottom: 0;
-            border-left: 70px solid transparent;
-            border-right: 70px solid transparent;
-            border-bottom: 110px solid #1a3009;
+            left: 10%;
+            top: 30%;
+            border-left: 80px solid transparent;
+            border-right: 80px solid transparent;
+            border-bottom: 60px solid #4a6b2a;
+            opacity: 0.8;
         }
 
         .mountain5 {
-            left: 25%;
-            bottom: 0;
-            border-left: 50px solid transparent;
-            border-right: 50px solid transparent;
-            border-bottom: 80px solid #2d5016;
+            right: 15%;
+            top: 25%;
+            border-left: 100px solid transparent;
+            border-right: 100px solid transparent;
+            border-bottom: 80px solid #3a5520;
+            opacity: 0.7;
         }
 
         .mountain6 {
-            right: 45%;
-            bottom: 0;
-            border-left: 90px solid transparent;
-            border-right: 90px solid transparent;
-            border-bottom: 140px solid #1a3009;
+            left: 60%;
+            top: 35%;
+            border-left: 70px solid transparent;
+            border-right: 70px solid transparent;
+            border-bottom: 50px solid #4a6b2a;
+            opacity: 0.8;
         }
 
-        /* 背景の下部に追加の山 */
+        /* さらに遠い山並み */
         .mountain7 {
             left: 5%;
-            top: 450%;
+            top: 60%;
             border-left: 120px solid transparent;
             border-right: 120px solid transparent;
-            border-bottom: 200px solid #1a3009;
+            border-bottom: 90px solid #5a7b3a;
+            opacity: 0.6;
         }
 
         .mountain8 {
             right: 10%;
-            top: 470%;
+            top: 55%;
+            border-left: 90px solid transparent;
+            border-right: 90px solid transparent;
+            border-bottom: 70px solid #4a6b2a;
+            opacity: 0.6;
+        }
+
+        .mountain9 {
+            left: 40%;
+            top: 65%;
+            border-left: 110px solid transparent;
+            border-right: 110px solid transparent;
+            border-bottom: 85px solid #5a7b3a;
+            opacity: 0.5;
+        }
+
+        /* 最も遠い山並み */
+        .mountain10 {
+            left: 20%;
+            top: 150%;
+            border-left: 140px solid transparent;
+            border-right: 140px solid transparent;
+            border-bottom: 100px solid #6a8b4a;
+            opacity: 0.4;
+        }
+
+        .mountain11 {
+            right: 25%;
+            top: 180%;
+            border-left: 160px solid transparent;
+            border-right: 160px solid transparent;
+            border-bottom: 120px solid #5a7b3a;
+            opacity: 0.3;
+        }
+
+        .mountain12 {
+            left: 50%;
+            top: 220%;
             border-left: 100px solid transparent;
             border-right: 100px solid transparent;
-            border-bottom: 160px solid #2d5016;
+            border-bottom: 80px solid #6a8b4a;
+            opacity: 0.3;
         }
 
         #shuriken {
