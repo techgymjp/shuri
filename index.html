@@ -271,6 +271,7 @@
 
         <div id="instructions">
             <h1>🥷 手裏剣シュシュシュ 🥷</h1>
+            <p>📱 iPhoneの場合、加速度センサーの許可が必要です</p>
             <p>デバイスを水平に持って、横に素早く振ってください！</p>
             <p>加速度に応じて手裏剣が遠くまで飛びます</p>
             <p>最高記録を目指しましょう！</p>
@@ -469,13 +470,19 @@
                         await this.initAudio();
                     }
                     
-                    // 加速度センサーの許可を求める
-                    if (typeof DeviceMotionEvent.requestPermission === 'function') {
+                    // iOS 13+ の加速度センサー許可を求める
+                    if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
                         const permission = await DeviceMotionEvent.requestPermission();
                         if (permission !== 'granted') {
-                            alert('加速度センサーの許可が必要です');
+                            alert('加速度センサーの許可が必要です。設定から許可してください。');
                             return;
                         }
+                    }
+                    
+                    // 加速度センサーが利用可能かチェック
+                    if (typeof DeviceMotionEvent === 'undefined') {
+                        alert('このデバイスは加速度センサーに対応していません。PCの場合はスマートフォンでアクセスしてください。');
+                        return;
                     }
                     
                     this.instructions.style.display = 'none';
@@ -499,10 +506,11 @@
                     this.distanceDisplay.textContent = '距離: 0m';
                     
                     // 加速度センサーのリスナーを追加
-                    window.addEventListener('devicemotion', (e) => this.handleMotion(e));
+                    window.addEventListener('devicemotion', (e) => this.handleMotion(e), { passive: true });
                     
                 } catch (error) {
-                    alert('このデバイスは加速度センサーに対応していません');
+                    console.error('ゲーム開始エラー:', error);
+                    alert('ゲームの開始に失敗しました。ブラウザを更新して再試行してください。');
                 }
             }
 
@@ -568,7 +576,7 @@
                     this.updateClouds();
                     
                     // 手裏剣のサイズ変化（遠近感）- 短時間飛行
-                    const maxAltitude = 6000; // 最高高度を半分に減少（8000→4000）
+                    const maxAltitude = 4000; // 最高高度を半分に減少（8000→4000）
                     const progress = Math.min(this.altitude / maxAltitude, 1);
                     
                     if (progress < 0.2) {
@@ -602,7 +610,7 @@
                     this.distanceDisplay.textContent = `距離: ${Math.floor(this.distance)}m`;
                     
                     // 手裏剣が着地するか、速度が十分小さくなったら終了
-                    if (this.altitude > maxAltitude || this.velocity < 1.5) { // 終了速度を上げる（1→2）
+                    if (this.altitude > maxAltitude || this.velocity < 2) { // 終了速度を上げる（1→2）
                         this.endGame();
                         return;
                     }
