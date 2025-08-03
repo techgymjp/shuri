@@ -250,19 +250,18 @@
 
         #gameOver {
             position: absolute;
-            bottom: 20px;
+            top: 75%;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translate(-50%, -50%);
             text-align: center;
             color: white;
             z-index: 100;
             background: rgba(0,0,0,0.8);
-            padding: 20px 30px;
+            padding: 30px;
             border-radius: 15px;
             display: none;
             max-width: 90%;
             min-width: 300px;
-            width: auto;
         }
 
         #distance {
@@ -771,10 +770,10 @@
                     // 手裏剣の位置を更新（より大きな放物線軌道）
                     const screenHeight = window.innerHeight;
                     const verticalProgress = Math.sin(progress * Math.PI * 0.9); // より緩やかな弧
-                    const maxHeight = screenHeight * 0.7; // 画面の70%まで上昇
+                    const maxHeight = screenHeight * 0.85; // 画面の85%まで上昇（70%→85%）
                     const y = 100 + (verticalProgress * maxHeight);
                     
-                    this.shuriken.style.bottom = Math.max(50, y) + 'px';
+                    this.shuriken.style.bottom = Math.max(30, y) + 'px'; // 最低高度を30pxに下げる
                     this.shuriken.style.transform = `translateX(-50%) scale(${this.shurikenScale})`;
                     
                     // 軌跡エフェクトを追加（頻度を上げる）
