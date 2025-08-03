@@ -511,43 +511,43 @@
                     if (!this.isPlaying) return;
                     
                     // 距離を増加（より大きく）
-                    this.distance += this.velocity * 0.3;
-                    this.altitude += this.velocity * 2;
+                    this.distance += this.velocity * 0.5;
+                    this.altitude += this.velocity * 0.3; // 高度上昇を大幅に減少
                     
-                    // 速度を非常にゆっくりと減少（長時間飛行）
-                    this.velocity *= 0.9985;
+                    // 速度を適度に減少（長時間飛行）
+                    this.velocity *= 0.996; // より強い減衰
                     
-                    // 背景のスクロール速度（手裏剣の速度に応じて大幅に増加）
-                    this.backgroundOffset += this.velocity * 2;
+                    // 背景のスクロール速度（手裏剣の速度に応じて）
+                    this.backgroundOffset += this.velocity * 1.5;
                     this.background.style.transform = `translateY(${this.backgroundOffset}px)`;
                     
                     // 手裏剣のサイズ変化（遠近感）- より長い飛行時間
-                    const maxAltitude = 2000; // 最高高度を大幅に増加
+                    const maxAltitude = 8000; // 最高高度を大幅に増加
                     const progress = Math.min(this.altitude / maxAltitude, 1);
                     
-                    if (progress < 0.3) {
+                    if (progress < 0.2) {
                         // 上昇初期：徐々に大きくなる
-                        this.shurikenScale = 1 + progress * 5; // 1 → 2.5
-                    } else if (progress < 0.7) {
+                        this.shurikenScale = 1 + progress * 7.5; // 1 → 2.5
+                    } else if (progress < 0.8) {
                         // 上昇中期〜最高点：最大サイズを維持
-                        this.shurikenScale = 2.5 + Math.sin((progress - 0.3) * Math.PI * 2.5) * 0.5; // 2〜3で振動
+                        this.shurikenScale = 2.5 + Math.sin((progress - 0.2) * Math.PI * 1.5) * 0.3; // 2.2〜2.8で振動
                     } else {
                         // 下降中：徐々に小さくなる
-                        const descendProgress = (progress - 0.7) / 0.3;
+                        const descendProgress = (progress - 0.8) / 0.2;
                         this.shurikenScale = 2.5 - descendProgress * 2.2; // 2.5 → 0.3
                     }
                     
                     // 手裏剣の位置を更新（より大きな放物線軌道）
                     const screenHeight = window.innerHeight;
-                    const verticalProgress = Math.sin(progress * Math.PI * 0.8); // より緩やかな弧
-                    const maxHeight = screenHeight * 0.8; // 画面の80%まで上昇
+                    const verticalProgress = Math.sin(progress * Math.PI * 0.9); // より緩やかな弧
+                    const maxHeight = screenHeight * 0.7; // 画面の70%まで上昇
                     const y = 100 + (verticalProgress * maxHeight);
                     
                     this.shuriken.style.bottom = Math.max(50, y) + 'px';
                     this.shuriken.style.transform = `translateX(-50%) scale(${this.shurikenScale})`;
                     
                     // 軌跡エフェクトを追加（頻度を上げる）
-                    if (Math.random() < 0.7) { // 70%の確率で軌跡を追加
+                    if (Math.random() < 0.8) { // 80%の確率で軌跡を追加
                         const rect = this.shuriken.getBoundingClientRect();
                         this.addTrail(rect.left + rect.width/2, rect.top + rect.height/2);
                     }
@@ -556,7 +556,7 @@
                     this.distanceDisplay.textContent = `距離: ${Math.floor(this.distance)}m`;
                     
                     // 手裏剣が着地するか、速度が十分小さくなったら終了
-                    if (this.altitude > maxAltitude || this.velocity < 0.2) {
+                    if (this.altitude > maxAltitude || this.velocity < 1) {
                         this.endGame();
                         return;
                     }
