@@ -26,6 +26,16 @@
             overflow: hidden;
         }
 
+        #groundBackground {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 600%;
+            z-index: 0;
+            transition: transform 0.1s ease-out;
+        }
+
         #background {
             position: absolute;
             top: 0;
@@ -46,6 +56,54 @@
                 #8B7355 100%);
             z-index: 1;
             transition: transform 0.1s ease-out;
+        }
+
+        .ground-element {
+            position: absolute;
+        }
+
+        .field {
+            background: linear-gradient(45deg, #90EE90, #98FB98);
+            border: 2px solid #228B22;
+            border-radius: 10px;
+        }
+
+        .rice-field {
+            background: linear-gradient(45deg, #ADFF2F, #9ACD32);
+            border: 1px solid #6B8E23;
+        }
+
+        .river {
+            background: linear-gradient(90deg, #4169E1, #1E90FF, #87CEEB);
+            border-radius: 20px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .house {
+            background: #D2691E;
+            position: relative;
+        }
+
+        .house::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: -5px;
+            width: calc(100% + 10px);
+            height: 20px;
+            background: #8B4513;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+
+        .road {
+            background: #696969;
+            border-left: 2px dashed #FFFFFF;
+            border-right: 2px dashed #FFFFFF;
+        }
+
+        .forest {
+            background: radial-gradient(circle, #228B22, #006400);
+            border-radius: 50%;
         }
 
         .cloud {
@@ -253,6 +311,7 @@
 </head>
 <body>
     <div id="gameContainer">
+        <div id="groundBackground"></div>
         <div id="background">
             <div class="cloud cloud1"></div>
             <div class="cloud cloud2"></div>
@@ -328,10 +387,12 @@
                 this.animationId = null;
                 this.trails = [];
                 this.backgroundOffset = 0;
+                this.groundOffset = 0;
                 this.shurikenScale = 1;
                 this.altitude = 0;
                 this.clouds = [];
-                this.cloudSpeed = 2;
+                this.cloudSpeed = 8; // 雲の速度を4倍に（2→8）
+                this.groundElements = [];
                 
                 // 音声関連
                 this.audioContext = null;
@@ -342,11 +403,73 @@
                 this.bindEvents();
                 this.initAudio();
                 this.initClouds();
+                this.initGroundBackground();
             }
 
             initClouds() {
                 // 既存の雲をclouds配列に追加
                 this.clouds = Array.from(document.querySelectorAll('.cloud'));
+            }
+
+            initGroundBackground() {
+                this.groundBackground = document.getElementById('groundBackground');
+                this.createGroundElements();
+            }
+
+            createGroundElements() {
+                const elements = [
+                    // 田畑
+                    { type: 'field', x: 10, y: 200, w: 80, h: 60 },
+                    { type: 'field', x: 100, y: 150, w: 90, h: 70 },
+                    { type: 'rice-field', x: 200, y: 180, w: 100, h: 50 },
+                    { type: 'field', x: 320, y: 160, w: 75, h: 80 },
+                    { type: 'rice-field', x: 50, y: 300, w: 120, h: 60 },
+                    { type: 'field', x: 180, y: 280, w: 90, h: 90 },
+                    { type: 'rice-field', x: 280, y: 320, w: 110, h: 55 },
+                    { type: 'field', x: 20, y: 450, w: 95, h: 75 },
+                    { type: 'rice-field', x: 130, y: 420, w: 85, h: 70 },
+                    { type: 'field', x: 240, y: 480, w: 100, h: 80 },
+                    { type: 'rice-field', x: 350, y: 440, w: 80, h: 90 },
+                    
+                    // 川
+                    { type: 'river', x: 0, y: 100, w: 400, h: 25 },
+                    { type: 'river', x: 150, y: 250, w: 250, h: 20 },
+                    { type: 'river', x: 50, y: 380, w: 300, h: 30 },
+                    
+                    // 民家
+                    { type: 'house', x: 70, y: 120, w: 20, h: 25 },
+                    { type: 'house', x: 150, y: 220, w: 18, h: 22 },
+                    { type: 'house', x: 250, y: 140, w: 22, h: 28 },
+                    { type: 'house', x: 320, y: 240, w: 20, h: 24 },
+                    { type: 'house', x: 80, y: 350, w: 19, h: 26 },
+                    { type: 'house', x: 200, y: 400, w: 21, h: 25 },
+                    { type: 'house', x: 300, y: 380, w: 23, h: 27 },
+                    
+                    // 道路
+                    { type: 'road', x: 120, y: 0, w: 15, h: 600 },
+                    { type: 'road', x: 280, y: 0, w: 12, h: 600 },
+                    
+                    // 森
+                    { type: 'forest', x: 30, y: 80, w: 40, h: 40 },
+                    { type: 'forest', x: 350, y: 100, w: 45, h: 45 },
+                    { type: 'forest', x: 10, y: 520, w: 50, h: 50 },
+                    { type: 'forest', x: 300, y: 540, w: 35, h: 35 },
+                ];
+
+                // 地上要素を複数セット作成（スクロール用）
+                for (let set = 0; set < 10; set++) {
+                    elements.forEach(element => {
+                        const groundElement = document.createElement('div');
+                        groundElement.className = `ground-element ${element.type}`;
+                        groundElement.style.left = element.x + 'px';
+                        groundElement.style.top = (element.y + set * 600) + 'px';
+                        groundElement.style.width = element.w + 'px';
+                        groundElement.style.height = element.h + 'px';
+                        
+                        this.groundBackground.appendChild(groundElement);
+                        this.groundElements.push(groundElement);
+                    });
+                }
             }
 
             createCloud() {
@@ -399,8 +522,8 @@
                     }
                 });
                 
-                // 新しい雲をランダムに生成
-                if (Math.random() < 0.02) { // 2%の確率で新しい雲を生成
+                // 新しい雲をランダムに生成（頻度を上げる）
+                if (Math.random() < 0.05) { // 5%の確率で新しい雲を生成（2%→5%）
                     this.createCloud();
                 }
             }
@@ -493,6 +616,7 @@
                     this.velocity = 0;
                     this.throwTriggered = false;
                     this.backgroundOffset = 0;
+                    this.groundOffset = 0;
                     this.shurikenScale = 1;
                     this.altitude = 0;
                     
@@ -504,6 +628,7 @@
                     
                     // 背景を初期位置に戻す
                     this.background.style.transform = 'translateY(0)';
+                    this.groundBackground.style.transform = 'translateY(0)';
                     
                     this.distanceDisplay.textContent = '距離: 0m';
                     
@@ -573,6 +698,10 @@
                     // 背景のスクロール速度（手裏剣の速度に応じて）- 下方向にスクロール
                     this.backgroundOffset += this.velocity * 1.5;
                     this.background.style.transform = `translateY(${this.backgroundOffset}px)`;
+                    
+                    // 地上背景のスクロール（より速く移動して遠近感を演出）
+                    this.groundOffset += this.velocity * 2.5;
+                    this.groundBackground.style.transform = `translateY(${this.groundOffset}px)`;
                     
                     // 雲を更新
                     this.updateClouds();
@@ -709,6 +838,7 @@
                 
                 // 背景を初期位置に戻す
                 this.background.style.transform = 'translateY(0)';
+                this.groundBackground.style.transform = 'translateY(0)';
                 
                 this.gameOver.style.display = 'none';
                 this.instructions.style.display = 'block';
