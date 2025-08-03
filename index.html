@@ -31,8 +31,19 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 200%;
-            background: linear-gradient(180deg, #000428 0%, #004e92 30%, #87CEEB 60%, #98FB98 80%, #F0E68C 100%);
+            height: 500%;
+            background: linear-gradient(180deg, 
+                #000428 0%, 
+                #004e92 10%, 
+                #009ffd 20%, 
+                #00d2ff 30%, 
+                #87CEEB 40%, 
+                #87CEEB 50%, 
+                #98FB98 60%, 
+                #98FB98 70%, 
+                #F0E68C 80%, 
+                #DEB887 90%, 
+                #8B7355 100%);
             z-index: 1;
             transition: transform 0.1s ease-out;
         }
@@ -54,7 +65,7 @@
         .cloud1 {
             width: 60px;
             height: 30px;
-            top: 30%;
+            top: 15%;
             left: 20%;
         }
 
@@ -68,7 +79,7 @@
         .cloud2 {
             width: 80px;
             height: 40px;
-            top: 50%;
+            top: 25%;
             left: 70%;
         }
 
@@ -82,7 +93,7 @@
         .cloud3 {
             width: 100px;
             height: 50px;
-            top: 70%;
+            top: 35%;
             left: 40%;
         }
 
@@ -96,7 +107,7 @@
         .cloud4 {
             width: 70px;
             height: 35px;
-            top: 90%;
+            top: 45%;
             left: 10%;
         }
 
@@ -105,6 +116,34 @@
             height: 50px;
             top: -25px;
             left: 15px;
+        }
+
+        .cloud5 {
+            width: 90px;
+            height: 45px;
+            top: 55%;
+            left: 60%;
+        }
+
+        .cloud5:before {
+            width: 70px;
+            height: 70px;
+            top: -35px;
+            left: 15px;
+        }
+
+        .cloud6 {
+            width: 75px;
+            height: 38px;
+            top: 65%;
+            left: 25%;
+        }
+
+        .cloud6:before {
+            width: 55px;
+            height: 55px;
+            top: -28px;
+            left: 12px;
         }
 
         .mountain {
@@ -117,6 +156,7 @@
 
         .mountain1 {
             left: 10%;
+            top: 85%;
             border-left: 80px solid transparent;
             border-right: 80px solid transparent;
             border-bottom: 120px solid #2d5016;
@@ -124,6 +164,7 @@
 
         .mountain2 {
             left: 40%;
+            top: 80%;
             border-left: 100px solid transparent;
             border-right: 100px solid transparent;
             border-bottom: 150px solid #1a3009;
@@ -131,9 +172,26 @@
 
         .mountain3 {
             right: 20%;
+            top: 87%;
             border-left: 60px solid transparent;
             border-right: 60px solid transparent;
             border-bottom: 90px solid #2d5016;
+        }
+
+        .mountain4 {
+            left: 70%;
+            top: 82%;
+            border-left: 70px solid transparent;
+            border-right: 70px solid transparent;
+            border-bottom: 110px solid #1a3009;
+        }
+
+        .mountain5 {
+            left: 25%;
+            top: 88%;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 80px solid #2d5016;
         }
 
         #shuriken {
@@ -286,9 +344,13 @@
             <div class="cloud cloud2"></div>
             <div class="cloud cloud3"></div>
             <div class="cloud cloud4"></div>
+            <div class="cloud cloud5"></div>
+            <div class="cloud cloud6"></div>
             <div class="mountain mountain1"></div>
             <div class="mountain mountain2"></div>
             <div class="mountain mountain3"></div>
+            <div class="mountain mountain4"></div>
+            <div class="mountain mountain5"></div>
         </div>
 
         <div id="instructions">
@@ -434,8 +496,8 @@
             }
 
             throwShuriken(power) {
-                // 投げる力に基づいて初期速度を設定
-                this.velocity = power * 2;
+                // 投げる力に基づいて初期速度を設定（より大きな値）
+                this.velocity = power * 5;
                 
                 // 手裏剣を回転させる
                 this.shuriken.querySelector('.shuriken-star').classList.add('rotating');
@@ -448,46 +510,53 @@
                 const animate = () => {
                     if (!this.isPlaying) return;
                     
-                    // 距離を増加
-                    this.distance += this.velocity * 0.1;
-                    this.altitude += this.velocity * 0.8;
+                    // 距離を増加（より大きく）
+                    this.distance += this.velocity * 0.3;
+                    this.altitude += this.velocity * 2;
                     
-                    // 速度を徐々に減少（空気抵抗と重力）
-                    this.velocity *= 0.99;
+                    // 速度を非常にゆっくりと減少（長時間飛行）
+                    this.velocity *= 0.9985;
                     
-                    // 背景のスクロール速度（手裏剣の速度に応じて）
-                    this.backgroundOffset += this.velocity * 0.5;
+                    // 背景のスクロール速度（手裏剣の速度に応じて大幅に増加）
+                    this.backgroundOffset += this.velocity * 2;
                     this.background.style.transform = `translateY(${this.backgroundOffset}px)`;
                     
-                    // 手裏剣のサイズ変化（遠近感）
-                    const maxAltitude = 300; // 最高高度
+                    // 手裏剣のサイズ変化（遠近感）- より長い飛行時間
+                    const maxAltitude = 2000; // 最高高度を大幅に増加
                     const progress = Math.min(this.altitude / maxAltitude, 1);
                     
-                    if (progress < 0.5) {
-                        // 上昇中：大きくなる
-                        this.shurikenScale = 1 + progress * 2; // 1 → 2
+                    if (progress < 0.3) {
+                        // 上昇初期：徐々に大きくなる
+                        this.shurikenScale = 1 + progress * 5; // 1 → 2.5
+                    } else if (progress < 0.7) {
+                        // 上昇中期〜最高点：最大サイズを維持
+                        this.shurikenScale = 2.5 + Math.sin((progress - 0.3) * Math.PI * 2.5) * 0.5; // 2〜3で振動
                     } else {
-                        // 下降中：小さくなる
-                        this.shurikenScale = 2 - (progress - 0.5) * 3; // 2 → 0.5
+                        // 下降中：徐々に小さくなる
+                        const descendProgress = (progress - 0.7) / 0.3;
+                        this.shurikenScale = 2.5 - descendProgress * 2.2; // 2.5 → 0.3
                     }
                     
-                    // 手裏剣の位置を更新（縦方向の移動）
+                    // 手裏剣の位置を更新（より大きな放物線軌道）
                     const screenHeight = window.innerHeight;
-                    const verticalProgress = Math.sin(progress * Math.PI); // 放物線の軌道
-                    const y = screenHeight - 100 - (verticalProgress * 400);
+                    const verticalProgress = Math.sin(progress * Math.PI * 0.8); // より緩やかな弧
+                    const maxHeight = screenHeight * 0.8; // 画面の80%まで上昇
+                    const y = 100 + (verticalProgress * maxHeight);
                     
-                    this.shuriken.style.bottom = Math.max(50, screenHeight - y) + 'px';
+                    this.shuriken.style.bottom = Math.max(50, y) + 'px';
                     this.shuriken.style.transform = `translateX(-50%) scale(${this.shurikenScale})`;
                     
-                    // 軌跡エフェクトを追加
-                    const rect = this.shuriken.getBoundingClientRect();
-                    this.addTrail(rect.left + rect.width/2, rect.top + rect.height/2);
+                    // 軌跡エフェクトを追加（頻度を上げる）
+                    if (Math.random() < 0.7) { // 70%の確率で軌跡を追加
+                        const rect = this.shuriken.getBoundingClientRect();
+                        this.addTrail(rect.left + rect.width/2, rect.top + rect.height/2);
+                    }
                     
                     // 距離を表示
                     this.distanceDisplay.textContent = `距離: ${Math.floor(this.distance)}m`;
                     
                     // 手裏剣が着地するか、速度が十分小さくなったら終了
-                    if (this.altitude > maxAltitude || this.velocity < 0.5) {
+                    if (this.altitude > maxAltitude || this.velocity < 0.2) {
                         this.endGame();
                         return;
                     }
