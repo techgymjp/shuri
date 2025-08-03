@@ -773,7 +773,7 @@
                     const maxHeight = screenHeight * 0.85; // 画面の85%まで上昇（70%→85%）
                     const y = 100 + (verticalProgress * maxHeight);
                     
-                    this.shuriken.style.bottom = Math.max(30, y) + 'px'; // 最低高度を30pxに下げる
+                    this.shuriken.style.bottom = Math.max(100, y) + 'px'; // 最低高度を100pxに戻す
                     this.shuriken.style.transform = `translateX(-50%) scale(${this.shurikenScale})`;
                     
                     // 軌跡エフェクトを追加（頻度を上げる）
