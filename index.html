@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>手裏剣シュシュシュ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            overflow: hidden;
+            user-select: none;
+            height: 100vh;
+        }
+
+        #gameContainer {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #87CEEB 0%, #98FB98 50%, #F0E68C 100%);
+            z-index: 1;
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+            opacity: 0.8;
+            animation: drift 20s infinite linear;
+        }
+
+        .cloud:before {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+        }
+
+        .cloud1 {
+            width: 80px;
+            height: 40px;
+            top: 20%;
+            left: -100px;
+        }
+
+        .cloud1:before {
+            width: 60px;
+            height: 60px;
+            top: -30px;
+            left: 10px;
+        }
+
+        .cloud2 {
+            width: 100px;
+            height: 50px;
+            top: 40%;
+            left: -120px;
+            animation-delay: -10s;
+        }
+
+        .cloud2:before {
+            width: 80px;
+            height: 80px;
+            top: -40px;
+            left: 20px;
+        }
+
+        @keyframes drift {
+            from { transform: translateX(0); }
+            to { transform: translateX(calc(100vw + 150px)); }
+        }
+
+        #shuriken {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            left: 50px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            transition: none;
+        }
+
+        .shuriken-star {
+            width: 100%;
+            height: 100%;
+            background: #333;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .rotating {
+            animation: spin 0.1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        #ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-size: 20px;
+            z-index: 100;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+        }
+
+        #instructions {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            z-index: 100;
+            background: rgba(0,0,0,0.7);
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 90%;
+        }
+
+        #instructions h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #FFD700;
+        }
+
+        #instructions p {
+            font-size: 1.2em;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+
+        #startButton {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+            transition: transform 0.2s;
+        }
+
+        #startButton:hover {
+            transform: translateY(-2px);
+        }
+
+        #gameOver {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            z-index: 100;
+            background: rgba(0,0,0,0.8);
+            padding: 30px;
+            border-radius: 15px;
+            display: none;
+        }
+
+        #distance {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        #maxDistance {
+            font-size: 1.2em;
+            color: #FFD700;
+            margin-bottom: 20px;
+        }
+
+        #restartButton {
+            background: linear-gradient(45deg, #4ECDC4, #44A08D);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
+            transition: transform 0.2s;
+        }
+
+        #restartButton:hover {
+            transform: translateY(-2px);
+        }
+
+        #accelerationDisplay {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+            font-size: 16px;
+            z-index: 100;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+        }
+
+        .trail {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, #FFD700, transparent);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <div id="background">
+            <div class="cloud cloud1"></div>
+            <div class="cloud cloud2"></div>
+        </div>
+
+        <div id="instructions">
+            <h1>🥷 手裏剣シュシュシュ 🥷</h1>
+            <p>デバイスを水平に持って、横に素早く振ってください！</p>
+            <p>加速度に応じて手裏剣が遠くまで飛びます</p>
+            <p>最高記録を目指しましょう！</p>
+            <button id="startButton">ゲーム開始</button>
+        </div>
+
+        <div id="ui">
+            <div id="distance">距離: 0m</div>
+            <div id="maxDistance">最高記録: 0m</div>
+        </div>
+
+        <div id="shuriken">
+            <div class="shuriken-star"></div>
+        </div>
+
+        <div id="gameOver">
+            <h2>🎯 結果発表 🎯</h2>
+            <div id="finalDistance">距離: 0m</div>
+            <div id="newRecord" style="display: none; color: #FFD700; font-size: 1.5em; margin: 10px 0;">🎉 新記録！ 🎉</div>
+            <button id="restartButton">もう一度挑戦</button>
+        </div>
+
+        <div id="accelerationDisplay">
+            <div>加速度 X: <span id="accelX">0</span></div>
+            <div>加速度 Y: <span id="accelY">0</span></div>
+            <div>加速度 Z: <span id="accelZ">0</span></div>
+        </div>
+    </div>
+
+    <script>
+        class ShurikenGame {
+            constructor() {
+                this.shuriken = document.getElementById('shuriken');
+                this.distanceDisplay = document.getElementById('distance');
+                this.maxDistanceDisplay = document.getElementById('maxDistance');
+                this.instructions = document.getElementById('instructions');
+                this.gameOver = document.getElementById('gameOver');
+                this.startButton = document.getElementById('startButton');
+                this.restartButton = document.getElementById('restartButton');
+                
+                this.accelXDisplay = document.getElementById('accelX');
+                this.accelYDisplay = document.getElementById('accelY');
+                this.accelZDisplay = document.getElementById('accelZ');
+                
+                this.isPlaying = false;
+                this.distance = 0;
+                this.velocity = 0;
+                this.maxDistance = localStorage.getItem('maxDistance') || 0;
+                this.lastAcceleration = { x: 0, y: 0, z: 0 };
+                this.throwTriggered = false;
+                this.animationId = null;
+                this.trails = [];
+                
+                this.maxDistanceDisplay.textContent = `最高記録: ${this.maxDistance}m`;
+                
+                this.bindEvents();
+            }
+
+            bindEvents() {
+                this.startButton.addEventListener('click', () => this.startGame());
+                this.restartButton.addEventListener('click', () => this.restartGame());
+                
+                // デバイスの向きの変更を検知
+                window.addEventListener('orientationchange', () => {
+                    setTimeout(() => location.reload(), 500);
+                });
+            }
+
+            async startGame() {
+                try {
+                    // 加速度センサーの許可を求める
+                    if (typeof DeviceMotionEvent.requestPermission === 'function') {
+                        const permission = await DeviceMotionEvent.requestPermission();
+                        if (permission !== 'granted') {
+                            alert('加速度センサーの許可が必要です');
+                            return;
+                        }
+                    }
+                    
+                    this.instructions.style.display = 'none';
+                    this.isPlaying = true;
+                    this.distance = 0;
+                    this.velocity = 0;
+                    this.throwTriggered = false;
+                    
+                    // 手裏剣を初期位置に戻す
+                    this.shuriken.style.left = '50px';
+                    this.shuriken.style.top = '50%';
+                    this.shuriken.style.transform = 'translateY(-50%)';
+                    this.shuriken.querySelector('.shuriken-star').classList.remove('rotating');
+                    
+                    this.distanceDisplay.textContent = '距離: 0m';
+                    
+                    // 加速度センサーのリスナーを追加
+                    window.addEventListener('devicemotion', (e) => this.handleMotion(e));
+                    
+                } catch (error) {
+                    alert('このデバイスは加速度センサーに対応していません');
+                }
+            }
+
+            handleMotion(event) {
+                if (!this.isPlaying) return;
+                
+                const acceleration = event.accelerationIncludingGravity;
+                if (!acceleration) return;
+                
+                const x = acceleration.x || 0;
+                const y = acceleration.y || 0;
+                const z = acceleration.z || 0;
+                
+                // 加速度を表示（デバッグ用）
+                this.accelXDisplay.textContent = x.toFixed(2);
+                this.accelYDisplay.textContent = y.toFixed(2);
+                this.accelZDisplay.textContent = z.toFixed(2);
+                
+                // 横方向の加速度変化を検知（手裏剣投げのモーション）
+                const deltaX = Math.abs(x - this.lastAcceleration.x);
+                const deltaY = Math.abs(y - this.lastAcceleration.y);
+                
+                // 素早い横振りを検知（閾値を調整）
+                if ((deltaX > 5 || deltaY > 5) && !this.throwTriggered) {
+                    this.throwTriggered = true;
+                    const power = Math.min(Math.sqrt(deltaX * deltaX + deltaY * deltaY), 20);
+                    this.throwShuriken(power);
+                }
+                
+                this.lastAcceleration = { x, y, z };
+            }
+
+            throwShuriken(power) {
+                // 投げる力に基づいて初期速度を設定
+                this.velocity = power * 2;
+                
+                // 手裏剣を回転させる
+                this.shuriken.querySelector('.shuriken-star').classList.add('rotating');
+                
+                // アニメーションを開始
+                this.animateShuriken();
+            }
+
+            animateShuriken() {
+                const animate = () => {
+                    if (!this.isPlaying) return;
+                    
+                    // 距離を増加
+                    this.distance += this.velocity * 0.1;
+                    
+                    // 速度を徐々に減少（空気抵抗）
+                    this.velocity *= 0.995;
+                    
+                    // 手裏剣の位置を更新
+                    const screenWidth = window.innerWidth;
+                    const progress = Math.min(this.distance / 100, 1);
+                    const x = 50 + (screenWidth - 100) * progress;
+                    
+                    this.shuriken.style.left = x + 'px';
+                    
+                    // 軌跡エフェクトを追加
+                    this.addTrail(x, parseInt(this.shuriken.style.top) || window.innerHeight / 2);
+                    
+                    // 距離を表示
+                    this.distanceDisplay.textContent = `距離: ${Math.floor(this.distance)}m`;
+                    
+                    // 手裏剣が画面外に出るか、速度が十分小さくなったら終了
+                    if (x >= screenWidth - 50 || this.velocity < 0.1) {
+                        this.endGame();
+                        return;
+                    }
+                    
+                    this.animationId = requestAnimationFrame(animate);
+                };
+                
+                animate();
+            }
+
+            addTrail(x, y) {
+                const trail = document.createElement('div');
+                trail.className = 'trail';
+                trail.style.left = (x + 20) + 'px';
+                trail.style.top = (y + 20) + 'px';
+                
+                document.getElementById('gameContainer').appendChild(trail);
+                this.trails.push(trail);
+                
+                // 軌跡を徐々に消す
+                setTimeout(() => {
+                    trail.style.opacity = '0';
+                    trail.style.transition = 'opacity 0.5s';
+                    setTimeout(() => {
+                        if (trail.parentNode) {
+                            trail.parentNode.removeChild(trail);
+                        }
+                        const index = this.trails.indexOf(trail);
+                        if (index > -1) {
+                            this.trails.splice(index, 1);
+                        }
+                    }, 500);
+                }, 100);
+            }
+
+            endGame() {
+                this.isPlaying = false;
+                
+                // 加速度センサーのリスナーを削除
+                window.removeEventListener('devicemotion', this.handleMotion);
+                
+                // アニメーションを停止
+                if (this.animationId) {
+                    cancelAnimationFrame(this.animationId);
+                }
+                
+                // 手裏剣の回転を停止
+                this.shuriken.querySelector('.shuriken-star').classList.remove('rotating');
+                
+                // 最終距離
+                const finalDistance = Math.floor(this.distance);
+                document.getElementById('finalDistance').textContent = `距離: ${finalDistance}m`;
+                
+                // ハイスコアチェック
+                const newRecord = document.getElementById('newRecord');
+                if (finalDistance > this.maxDistance) {
+                    this.maxDistance = finalDistance;
+                    localStorage.setItem('maxDistance', this.maxDistance);
+                    this.maxDistanceDisplay.textContent = `最高記録: ${this.maxDistance}m`;
+                    newRecord.style.display = 'block';
+                } else {
+                    newRecord.style.display = 'none';
+                }
+                
+                // ゲームオーバー画面を表示
+                this.gameOver.style.display = 'block';
+            }
+
+            restartGame() {
+                // 軌跡をクリア
+                this.trails.forEach(trail => {
+                    if (trail.parentNode) {
+                        trail.parentNode.removeChild(trail);
+                    }
+                });
+                this.trails = [];
+                
+                this.gameOver.style.display = 'none';
+                this.instructions.style.display = 'block';
+            }
+        }
+
+        // ゲーム開始
+        window.addEventListener('load', () => {
+            new ShurikenGame();
+        });
+    </script>
+</body>
+</html>
