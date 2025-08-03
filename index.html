@@ -773,7 +773,7 @@
                     if (!this.isPlaying) return;
                     
                     // 距離を増加（より大きく）
-                    this.distance += this.velocity * 0.5;
+                    this.distance += this.velocity * 0.75;
                     this.altitude += this.velocity * 0.2; // 高度上昇率を減少（0.3→0.2）
                     
                     // 速度を減少（より強い減衰で短時間飛行）
