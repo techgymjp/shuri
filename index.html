@@ -227,24 +227,24 @@
             z-index: 2;
         }
 
-        /* 手前の山並み（画面下部に常に表示） */
+        /* 手前の地面（画面下部に常に表示） */
         .mountain1 {
             position: fixed;
             left: 0%;
             bottom: 0;
-            border-left: 150px solid transparent;
-            border-right: 150px solid transparent;
-            border-bottom: 100px solid #1a3009;
+            border-left: 200px solid transparent;
+            border-right: 200px solid transparent;
+            border-bottom: 80px solid #2d5016;
             z-index: 3;
         }
 
         .mountain2 {
             position: fixed;
-            left: 25%;
+            left: 30%;
             bottom: 0;
-            border-left: 120px solid transparent;
-            border-right: 120px solid transparent;
-            border-bottom: 80px solid #2d5016;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-bottom: 60px solid #1a3009;
             z-index: 3;
         }
 
@@ -252,16 +252,16 @@
             position: fixed;
             right: 0%;
             bottom: 0;
-            border-left: 180px solid transparent;
-            border-right: 180px solid transparent;
-            border-bottom: 120px solid #1a3009;
+            border-left: 250px solid transparent;
+            border-right: 250px solid transparent;
+            border-bottom: 100px solid #2d5016;
             z-index: 3;
         }
 
-        /* 背景の遠い山並み（上方向に配置、スクロールで現れる） */
+        /* 山を背景の最下部に配置（上空から見下ろす視点） */
         .mountain4 {
             left: 10%;
-            top: 30%;
+            top: 450%;
             border-left: 80px solid transparent;
             border-right: 80px solid transparent;
             border-bottom: 60px solid #4a6b2a;
@@ -270,7 +270,7 @@
 
         .mountain5 {
             right: 15%;
-            top: 25%;
+            top: 460%;
             border-left: 100px solid transparent;
             border-right: 100px solid transparent;
             border-bottom: 80px solid #3a5520;
@@ -279,7 +279,7 @@
 
         .mountain6 {
             left: 60%;
-            top: 35%;
+            top: 470%;
             border-left: 70px solid transparent;
             border-right: 70px solid transparent;
             border-bottom: 50px solid #4a6b2a;
@@ -289,7 +289,7 @@
         /* さらに遠い山並み */
         .mountain7 {
             left: 5%;
-            top: 60%;
+            top: 480%;
             border-left: 120px solid transparent;
             border-right: 120px solid transparent;
             border-bottom: 90px solid #5a7b3a;
@@ -298,7 +298,7 @@
 
         .mountain8 {
             right: 10%;
-            top: 55%;
+            top: 485%;
             border-left: 90px solid transparent;
             border-right: 90px solid transparent;
             border-bottom: 70px solid #4a6b2a;
@@ -307,7 +307,7 @@
 
         .mountain9 {
             left: 40%;
-            top: 65%;
+            top: 490%;
             border-left: 110px solid transparent;
             border-right: 110px solid transparent;
             border-bottom: 85px solid #5a7b3a;
@@ -317,7 +317,7 @@
         /* 最も遠い山並み */
         .mountain10 {
             left: 20%;
-            top: 150%;
+            top: 495%;
             border-left: 140px solid transparent;
             border-right: 140px solid transparent;
             border-bottom: 100px solid #6a8b4a;
@@ -326,7 +326,7 @@
 
         .mountain11 {
             right: 25%;
-            top: 180%;
+            top: 496%;
             border-left: 160px solid transparent;
             border-right: 160px solid transparent;
             border-bottom: 120px solid #5a7b3a;
@@ -335,7 +335,7 @@
 
         .mountain12 {
             left: 50%;
-            top: 220%;
+            top: 498%;
             border-left: 100px solid transparent;
             border-right: 100px solid transparent;
             border-bottom: 80px solid #6a8b4a;
@@ -735,8 +735,8 @@
                     // 速度を適度に減少（長時間飛行）
                     this.velocity *= 0.996; // より強い減衰
                     
-                    // 背景のスクロール速度（手裏剣の速度に応じて）
-                    this.backgroundOffset += this.velocity * 1.5;
+                    // 背景のスクロール速度（手裏剣の速度に応じて）- 上方向にスクロール
+                    this.backgroundOffset -= this.velocity * 1.5;
                     this.background.style.transform = `translateY(${this.backgroundOffset}px)`;
                     
                     // 手裏剣のサイズ変化（遠近感）- より長い飛行時間
