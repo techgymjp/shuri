@@ -63,11 +63,11 @@
             border-radius: 50px;
         }
 
-        /* 雲を背景の上部に配置（上から下に流れる） */
+        /* 雲を背景全体に分散配置（継続的に上から現れる） */
         .cloud1 {
             width: 60px;
             height: 30px;
-            top: 5%;
+            top: -5%;
             left: 20%;
         }
 
@@ -81,7 +81,7 @@
         .cloud2 {
             width: 80px;
             height: 40px;
-            top: 10%;
+            top: 20%;
             left: 70%;
         }
 
@@ -95,7 +95,7 @@
         .cloud3 {
             width: 100px;
             height: 50px;
-            top: 15%;
+            top: 50%;
             left: 40%;
         }
 
@@ -109,7 +109,7 @@
         .cloud4 {
             width: 70px;
             height: 35px;
-            top: 20%;
+            top: 80%;
             left: 10%;
         }
 
@@ -123,7 +123,7 @@
         .cloud5 {
             width: 90px;
             height: 45px;
-            top: 25%;
+            top: 120%;
             left: 60%;
         }
 
@@ -137,7 +137,7 @@
         .cloud6 {
             width: 75px;
             height: 38px;
-            top: 30%;
+            top: 160%;
             left: 25%;
         }
 
@@ -151,7 +151,7 @@
         .cloud7 {
             width: 85px;
             height: 42px;
-            top: 50%;
+            top: 200%;
             left: 80%;
         }
 
@@ -165,7 +165,7 @@
         .cloud8 {
             width: 95px;
             height: 48px;
-            top: 80%;
+            top: 250%;
             left: 15%;
         }
 
@@ -179,7 +179,7 @@
         .cloud9 {
             width: 65px;
             height: 32px;
-            top: 120%;
+            top: 300%;
             left: 50%;
         }
 
@@ -193,7 +193,7 @@
         .cloud10 {
             width: 110px;
             height: 55px;
-            top: 150%;
+            top: 350%;
             left: 30%;
         }
 
@@ -202,6 +202,77 @@
             height: 85px;
             top: -42px;
             left: 25px;
+        }
+
+        /* 追加の雲でより密度を上げる */
+        .cloud11 {
+            width: 70px;
+            height: 35px;
+            top: 400%;
+            left: 75%;
+        }
+
+        .cloud11:before {
+            width: 50px;
+            height: 50px;
+            top: -25px;
+            left: 15px;
+        }
+
+        .cloud12 {
+            width: 85px;
+            height: 42px;
+            top: 450%;
+            left: 35%;
+        }
+
+        .cloud12:before {
+            width: 65px;
+            height: 65px;
+            top: -32px;
+            left: 18px;
+        }
+
+        .cloud13 {
+            width: 60px;
+            height: 30px;
+            top: 10%;
+            left: 85%;
+        }
+
+        .cloud13:before {
+            width: 40px;
+            height: 40px;
+            top: -20px;
+            left: 10px;
+        }
+
+        .cloud14 {
+            width: 90px;
+            height: 45px;
+            top: 90%;
+            left: 5%;
+        }
+
+        .cloud14:before {
+            width: 70px;
+            height: 70px;
+            top: -35px;
+            left: 15px;
+        }
+
+        .cloud15 {
+            width: 75px;
+            height: 38px;
+            top: 180%;
+            left: 90%;
+        }
+
+        .cloud15:before {
+            width: 55px;
+            height: 55px;
+            top: -28px;
+            left: 12px;
         }
 
         #shuriken {
@@ -360,6 +431,11 @@
             <div class="cloud cloud8"></div>
             <div class="cloud cloud9"></div>
             <div class="cloud cloud10"></div>
+            <div class="cloud cloud11"></div>
+            <div class="cloud cloud12"></div>
+            <div class="cloud cloud13"></div>
+            <div class="cloud cloud14"></div>
+            <div class="cloud cloud15"></div>
         </div>
 
         <div id="instructions">
