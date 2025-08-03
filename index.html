@@ -31,17 +31,17 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, #87CEEB 0%, #98FB98 50%, #F0E68C 100%);
+            height: 200%;
+            background: linear-gradient(180deg, #000428 0%, #004e92 30%, #87CEEB 60%, #98FB98 80%, #F0E68C 100%);
             z-index: 1;
+            transition: transform 0.1s ease-out;
         }
 
         .cloud {
             position: absolute;
             background: white;
             border-radius: 50px;
-            opacity: 0.8;
-            animation: drift 20s infinite linear;
+            opacity: 0.7;
         }
 
         .cloud:before {
@@ -52,46 +52,97 @@
         }
 
         .cloud1 {
-            width: 80px;
-            height: 40px;
-            top: 20%;
-            left: -100px;
+            width: 60px;
+            height: 30px;
+            top: 30%;
+            left: 20%;
         }
 
         .cloud1:before {
-            width: 60px;
-            height: 60px;
-            top: -30px;
+            width: 40px;
+            height: 40px;
+            top: -20px;
             left: 10px;
         }
 
         .cloud2 {
-            width: 100px;
-            height: 50px;
-            top: 40%;
-            left: -120px;
-            animation-delay: -10s;
+            width: 80px;
+            height: 40px;
+            top: 50%;
+            left: 70%;
         }
 
         .cloud2:before {
+            width: 60px;
+            height: 60px;
+            top: -30px;
+            left: 20px;
+        }
+
+        .cloud3 {
+            width: 100px;
+            height: 50px;
+            top: 70%;
+            left: 40%;
+        }
+
+        .cloud3:before {
             width: 80px;
             height: 80px;
             top: -40px;
             left: 20px;
         }
 
-        @keyframes drift {
-            from { transform: translateX(0); }
-            to { transform: translateX(calc(100vw + 150px)); }
+        .cloud4 {
+            width: 70px;
+            height: 35px;
+            top: 90%;
+            left: 10%;
+        }
+
+        .cloud4:before {
+            width: 50px;
+            height: 50px;
+            top: -25px;
+            left: 15px;
+        }
+
+        .mountain {
+            position: absolute;
+            bottom: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+        }
+
+        .mountain1 {
+            left: 10%;
+            border-left: 80px solid transparent;
+            border-right: 80px solid transparent;
+            border-bottom: 120px solid #2d5016;
+        }
+
+        .mountain2 {
+            left: 40%;
+            border-left: 100px solid transparent;
+            border-right: 100px solid transparent;
+            border-bottom: 150px solid #1a3009;
+        }
+
+        .mountain3 {
+            right: 20%;
+            border-left: 60px solid transparent;
+            border-right: 60px solid transparent;
+            border-bottom: 90px solid #2d5016;
         }
 
         #shuriken {
             position: absolute;
             width: 40px;
             height: 40px;
-            left: 50px;
-            top: 50%;
-            transform: translateY(-50%);
+            left: 50%;
+            bottom: 100px;
+            transform: translateX(-50%);
             z-index: 10;
             transition: none;
         }
@@ -233,6 +284,11 @@
         <div id="background">
             <div class="cloud cloud1"></div>
             <div class="cloud cloud2"></div>
+            <div class="cloud cloud3"></div>
+            <div class="cloud cloud4"></div>
+            <div class="mountain mountain1"></div>
+            <div class="mountain mountain2"></div>
+            <div class="mountain mountain3"></div>
         </div>
 
         <div id="instructions">
@@ -270,6 +326,7 @@
         class ShurikenGame {
             constructor() {
                 this.shuriken = document.getElementById('shuriken');
+                this.background = document.getElementById('background');
                 this.distanceDisplay = document.getElementById('distance');
                 this.maxDistanceDisplay = document.getElementById('maxDistance');
                 this.instructions = document.getElementById('instructions');
@@ -289,6 +346,9 @@
                 this.throwTriggered = false;
                 this.animationId = null;
                 this.trails = [];
+                this.backgroundOffset = 0;
+                this.shurikenScale = 1;
+                this.altitude = 0;
                 
                 this.maxDistanceDisplay.textContent = `最高記録: ${this.maxDistance}m`;
                 
@@ -321,12 +381,18 @@
                     this.distance = 0;
                     this.velocity = 0;
                     this.throwTriggered = false;
+                    this.backgroundOffset = 0;
+                    this.shurikenScale = 1;
+                    this.altitude = 0;
                     
                     // 手裏剣を初期位置に戻す
-                    this.shuriken.style.left = '50px';
-                    this.shuriken.style.top = '50%';
-                    this.shuriken.style.transform = 'translateY(-50%)';
+                    this.shuriken.style.left = '50%';
+                    this.shuriken.style.bottom = '100px';
+                    this.shuriken.style.transform = 'translateX(-50%) scale(1)';
                     this.shuriken.querySelector('.shuriken-star').classList.remove('rotating');
+                    
+                    // 背景を初期位置に戻す
+                    this.background.style.transform = 'translateY(0)';
                     
                     this.distanceDisplay.textContent = '距離: 0m';
                     
@@ -384,25 +450,44 @@
                     
                     // 距離を増加
                     this.distance += this.velocity * 0.1;
+                    this.altitude += this.velocity * 0.8;
                     
-                    // 速度を徐々に減少（空気抵抗）
-                    this.velocity *= 0.995;
+                    // 速度を徐々に減少（空気抵抗と重力）
+                    this.velocity *= 0.99;
                     
-                    // 手裏剣の位置を更新
-                    const screenWidth = window.innerWidth;
-                    const progress = Math.min(this.distance / 100, 1);
-                    const x = 50 + (screenWidth - 100) * progress;
+                    // 背景のスクロール速度（手裏剣の速度に応じて）
+                    this.backgroundOffset += this.velocity * 0.5;
+                    this.background.style.transform = `translateY(${this.backgroundOffset}px)`;
                     
-                    this.shuriken.style.left = x + 'px';
+                    // 手裏剣のサイズ変化（遠近感）
+                    const maxAltitude = 300; // 最高高度
+                    const progress = Math.min(this.altitude / maxAltitude, 1);
+                    
+                    if (progress < 0.5) {
+                        // 上昇中：大きくなる
+                        this.shurikenScale = 1 + progress * 2; // 1 → 2
+                    } else {
+                        // 下降中：小さくなる
+                        this.shurikenScale = 2 - (progress - 0.5) * 3; // 2 → 0.5
+                    }
+                    
+                    // 手裏剣の位置を更新（縦方向の移動）
+                    const screenHeight = window.innerHeight;
+                    const verticalProgress = Math.sin(progress * Math.PI); // 放物線の軌道
+                    const y = screenHeight - 100 - (verticalProgress * 400);
+                    
+                    this.shuriken.style.bottom = Math.max(50, screenHeight - y) + 'px';
+                    this.shuriken.style.transform = `translateX(-50%) scale(${this.shurikenScale})`;
                     
                     // 軌跡エフェクトを追加
-                    this.addTrail(x, parseInt(this.shuriken.style.top) || window.innerHeight / 2);
+                    const rect = this.shuriken.getBoundingClientRect();
+                    this.addTrail(rect.left + rect.width/2, rect.top + rect.height/2);
                     
                     // 距離を表示
                     this.distanceDisplay.textContent = `距離: ${Math.floor(this.distance)}m`;
                     
-                    // 手裏剣が画面外に出るか、速度が十分小さくなったら終了
-                    if (x >= screenWidth - 50 || this.velocity < 0.1) {
+                    // 手裏剣が着地するか、速度が十分小さくなったら終了
+                    if (this.altitude > maxAltitude || this.velocity < 0.5) {
                         this.endGame();
                         return;
                     }
@@ -416,8 +501,9 @@
             addTrail(x, y) {
                 const trail = document.createElement('div');
                 trail.className = 'trail';
-                trail.style.left = (x + 20) + 'px';
-                trail.style.top = (y + 20) + 'px';
+                trail.style.left = x + 'px';
+                trail.style.top = y + 'px';
+                trail.style.transform = `scale(${this.shurikenScale * 0.5})`;
                 
                 document.getElementById('gameContainer').appendChild(trail);
                 this.trails.push(trail);
@@ -425,7 +511,7 @@
                 // 軌跡を徐々に消す
                 setTimeout(() => {
                     trail.style.opacity = '0';
-                    trail.style.transition = 'opacity 0.5s';
+                    trail.style.transition = 'opacity 0.8s';
                     setTimeout(() => {
                         if (trail.parentNode) {
                             trail.parentNode.removeChild(trail);
@@ -434,8 +520,8 @@
                         if (index > -1) {
                             this.trails.splice(index, 1);
                         }
-                    }, 500);
-                }, 100);
+                    }, 800);
+                }, 50);
             }
 
             endGame() {
@@ -479,6 +565,9 @@
                     }
                 });
                 this.trails = [];
+                
+                // 背景を初期位置に戻す
+                this.background.style.transform = 'translateY(0)';
                 
                 this.gameOver.style.display = 'none';
                 this.instructions.style.display = 'block';
