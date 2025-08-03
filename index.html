@@ -568,7 +568,7 @@
                     this.updateClouds();
                     
                     // 手裏剣のサイズ変化（遠近感）- 短時間飛行
-                    const maxAltitude = 4000; // 最高高度を半分に減少（8000→4000）
+                    const maxAltitude = 6000; // 最高高度を半分に減少（8000→4000）
                     const progress = Math.min(this.altitude / maxAltitude, 1);
                     
                     if (progress < 0.2) {
@@ -602,7 +602,7 @@
                     this.distanceDisplay.textContent = `距離: ${Math.floor(this.distance)}m`;
                     
                     // 手裏剣が着地するか、速度が十分小さくなったら終了
-                    if (this.altitude > maxAltitude || this.velocity < 2) { // 終了速度を上げる（1→2）
+                    if (this.altitude > maxAltitude || this.velocity < 1.5) { // 終了速度を上げる（1→2）
                         this.endGame();
                         return;
                     }
