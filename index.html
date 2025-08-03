@@ -28,10 +28,10 @@
 
         #groundBackground {
             position: absolute;
-            top: 0;
+            top: -500vh;
             left: 0;
             width: 100%;
-            height: 600%;
+            height: 600vh;
             z-index: 0;
             transition: transform 0.1s ease-out;
         }
@@ -391,7 +391,8 @@
                 this.shurikenScale = 1;
                 this.altitude = 0;
                 this.clouds = [];
-                this.cloudSpeed = 8; // 雲の速度を4倍に（2→8）
+                this.cloudSpeed = 8; // 雲の速度
+                this.groundSpeed = 3; // 地上背景の速度（雲より遅い）
                 this.groundElements = [];
                 
                 // 音声関連
@@ -417,59 +418,88 @@
             }
 
             createGroundElements() {
+                const windowHeight = window.innerHeight;
+                const windowWidth = window.innerWidth;
+                
+                // 田園風景要素を画面サイズに応じて配置
                 const elements = [
-                    // 田畑
-                    { type: 'field', x: 10, y: 200, w: 80, h: 60 },
-                    { type: 'field', x: 100, y: 150, w: 90, h: 70 },
-                    { type: 'rice-field', x: 200, y: 180, w: 100, h: 50 },
-                    { type: 'field', x: 320, y: 160, w: 75, h: 80 },
-                    { type: 'rice-field', x: 50, y: 300, w: 120, h: 60 },
-                    { type: 'field', x: 180, y: 280, w: 90, h: 90 },
-                    { type: 'rice-field', x: 280, y: 320, w: 110, h: 55 },
-                    { type: 'field', x: 20, y: 450, w: 95, h: 75 },
-                    { type: 'rice-field', x: 130, y: 420, w: 85, h: 70 },
-                    { type: 'field', x: 240, y: 480, w: 100, h: 80 },
-                    { type: 'rice-field', x: 350, y: 440, w: 80, h: 90 },
+                    // 田畑 - より多く配置
+                    { type: 'field', x: 0.1, y: 500, w: 0.15, h: 80 },
+                    { type: 'field', x: 0.2, y: 450, w: 0.18, h: 90 },
+                    { type: 'rice-field', x: 0.4, y: 480, w: 0.2, h: 70 },
+                    { type: 'field', x: 0.65, y: 460, w: 0.15, h: 100 },
+                    { type: 'rice-field', x: 0.85, y: 520, w: 0.12, h: 60 },
                     
-                    // 川
-                    { type: 'river', x: 0, y: 100, w: 400, h: 25 },
-                    { type: 'river', x: 150, y: 250, w: 250, h: 20 },
-                    { type: 'river', x: 50, y: 380, w: 300, h: 30 },
+                    { type: 'field', x: 0.05, y: 350, w: 0.22, h: 85 },
+                    { type: 'rice-field', x: 0.3, y: 320, w: 0.18, h: 95 },
+                    { type: 'field', x: 0.55, y: 340, w: 0.2, h: 75 },
+                    { type: 'rice-field', x: 0.8, y: 380, w: 0.17, h: 80 },
                     
-                    // 民家
-                    { type: 'house', x: 70, y: 120, w: 20, h: 25 },
-                    { type: 'house', x: 150, y: 220, w: 18, h: 22 },
-                    { type: 'house', x: 250, y: 140, w: 22, h: 28 },
-                    { type: 'house', x: 320, y: 240, w: 20, h: 24 },
-                    { type: 'house', x: 80, y: 350, w: 19, h: 26 },
-                    { type: 'house', x: 200, y: 400, w: 21, h: 25 },
-                    { type: 'house', x: 300, y: 380, w: 23, h: 27 },
+                    { type: 'field', x: 0.1, y: 200, w: 0.16, h: 90 },
+                    { type: 'rice-field', x: 0.35, y: 180, w: 0.2, h: 100 },
+                    { type: 'field', x: 0.6, y: 220, w: 0.18, h: 70 },
+                    { type: 'rice-field', x: 0.85, y: 250, w: 0.13, h: 85 },
                     
-                    // 道路
-                    { type: 'road', x: 120, y: 0, w: 15, h: 600 },
-                    { type: 'road', x: 280, y: 0, w: 12, h: 600 },
+                    { type: 'field', x: 0.02, y: 50, w: 0.2, h: 95 },
+                    { type: 'rice-field', x: 0.25, y: 80, w: 0.15, h: 80 },
+                    { type: 'field', x: 0.45, y: 30, w: 0.22, h: 110 },
+                    { type: 'rice-field', x: 0.7, y: 90, w: 0.18, h: 75 },
                     
-                    // 森
-                    { type: 'forest', x: 30, y: 80, w: 40, h: 40 },
-                    { type: 'forest', x: 350, y: 100, w: 45, h: 45 },
-                    { type: 'forest', x: 10, y: 520, w: 50, h: 50 },
-                    { type: 'forest', x: 300, y: 540, w: 35, h: 35 },
+                    // 川 - 蛇行する川
+                    { type: 'river', x: 0, y: 400, w: 1, h: 25 },
+                    { type: 'river', x: 0.2, y: 250, w: 0.6, h: 20 },
+                    { type: 'river', x: 0.1, y: 120, w: 0.8, h: 30 },
+                    
+                    // 民家 - 集落のように配置
+                    { type: 'house', x: 0.15, y: 420, w: 25, h: 30 },
+                    { type: 'house', x: 0.18, y: 440, w: 22, h: 28 },
+                    { type: 'house', x: 0.22, y: 430, w: 24, h: 32 },
+                    
+                    { type: 'house', x: 0.45, y: 280, w: 26, h: 29 },
+                    { type: 'house', x: 0.48, y: 300, w: 23, h: 31 },
+                    
+                    { type: 'house', x: 0.7, y: 150, w: 25, h: 30 },
+                    { type: 'house', x: 0.73, y: 170, w: 22, h: 28 },
+                    { type: 'house', x: 0.68, y: 180, w: 24, h: 29 },
+                    
+                    { type: 'house', x: 0.3, y: 60, w: 23, h: 27 },
+                    { type: 'house', x: 0.55, y: 100, w: 26, h: 31 },
+                    { type: 'house', x: 0.8, y: 40, w: 24, h: 28 },
+                    
+                    // 道路 - 縦横の道路
+                    { type: 'road', x: 0.25, y: 0, w: 20, h: 600 },
+                    { type: 'road', x: 0.65, y: 0, w: 18, h: 600 },
+                    { type: 'road', x: 0, y: 200, w: 1, h: 15 },
+                    { type: 'road', x: 0, y: 350, w: 1, h: 12 },
+                    
+                    // 森 - 散在する森
+                    { type: 'forest', x: 0.05, y: 480, w: 50, h: 50 },
+                    { type: 'forest', x: 0.82, y: 420, w: 45, h: 45 },
+                    { type: 'forest', x: 0.12, y: 300, w: 40, h: 40 },
+                    { type: 'forest', x: 0.75, y: 280, w: 55, h: 55 },
+                    { type: 'forest', x: 0.03, y: 150, w: 48, h: 48 },
+                    { type: 'forest', x: 0.85, y: 120, w: 42, h: 42 },
+                    { type: 'forest', x: 0.4, y: 50, w: 50, h: 50 },
                 ];
 
-                // 地上要素を複数セット作成（スクロール用）
-                for (let set = 0; set < 10; set++) {
-                    elements.forEach(element => {
-                        const groundElement = document.createElement('div');
-                        groundElement.className = `ground-element ${element.type}`;
-                        groundElement.style.left = element.x + 'px';
-                        groundElement.style.top = (element.y + set * 600) + 'px';
-                        groundElement.style.width = element.w + 'px';
-                        groundElement.style.height = element.h + 'px';
-                        
-                        this.groundBackground.appendChild(groundElement);
-                        this.groundElements.push(groundElement);
-                    });
-                }
+                elements.forEach(element => {
+                    const groundElement = document.createElement('div');
+                    groundElement.className = `ground-element ${element.type}`;
+                    
+                    // 相対座標を絶対座標に変換
+                    const left = element.x * windowWidth;
+                    const width = element.type === 'road' && element.w === 1 ? windowWidth : 
+                                  element.type === 'river' && element.w === 1 ? windowWidth :
+                                  element.w < 1 ? element.w * windowWidth : element.w;
+                    
+                    groundElement.style.left = left + 'px';
+                    groundElement.style.top = element.y + 'px';
+                    groundElement.style.width = width + 'px';
+                    groundElement.style.height = element.h + 'px';
+                    
+                    this.groundBackground.appendChild(groundElement);
+                    this.groundElements.push(groundElement);
+                });
             }
 
             createCloud() {
@@ -699,8 +729,8 @@
                     this.backgroundOffset += this.velocity * 1.5;
                     this.background.style.transform = `translateY(${this.backgroundOffset}px)`;
                     
-                    // 地上背景のスクロール（より速く移動して遠近感を演出）
-                    this.groundOffset += this.velocity * 2.5;
+                    // 地上背景のスクロール（雲より遅く下向きに）
+                    this.groundOffset += this.groundSpeed;
                     this.groundBackground.style.transform = `translateY(${this.groundOffset}px)`;
                     
                     // 雲を更新
