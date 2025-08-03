@@ -1,18 +1,4 @@
-<div class="mountain mountain4"></div>
-            <div class="mountain mountain5"></div>
-            <div class="mountain mountain6"></div>
-            <div class="mountain mountain7"></div>
-            <div class="mountain mountain8"></div>
-            <div class="mountain mountain9"></div>
-            <div class="mountain mountain10"></div>
-            <div class="mountain mountain11"></div>
-            <div class="mountain mountain12"></div>
-        </div>
-
-        <!-- 前景の山並み（常に画面下部に表示） -->
-        <div class="mountain mountain1"></div>
-        <div class="mountain mountain2"></div>
-        <div class="mountain mountain3"></div><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -77,11 +63,11 @@
             border-radius: 50px;
         }
 
-        /* 雲を画面内の適切な位置に配置 */
+        /* 雲を背景の上部に配置（上から下に流れる） */
         .cloud1 {
             width: 60px;
             height: 30px;
-            top: 15%;
+            top: 5%;
             left: 20%;
         }
 
@@ -95,7 +81,7 @@
         .cloud2 {
             width: 80px;
             height: 40px;
-            top: 25%;
+            top: 10%;
             left: 70%;
         }
 
@@ -109,7 +95,7 @@
         .cloud3 {
             width: 100px;
             height: 50px;
-            top: 35%;
+            top: 15%;
             left: 40%;
         }
 
@@ -123,7 +109,7 @@
         .cloud4 {
             width: 70px;
             height: 35px;
-            top: 45%;
+            top: 20%;
             left: 10%;
         }
 
@@ -137,7 +123,7 @@
         .cloud5 {
             width: 90px;
             height: 45px;
-            top: 55%;
+            top: 25%;
             left: 60%;
         }
 
@@ -151,7 +137,7 @@
         .cloud6 {
             width: 75px;
             height: 38px;
-            top: 65%;
+            top: 30%;
             left: 25%;
         }
 
@@ -165,7 +151,7 @@
         .cloud7 {
             width: 85px;
             height: 42px;
-            top: 120%;
+            top: 50%;
             left: 80%;
         }
 
@@ -179,7 +165,7 @@
         .cloud8 {
             width: 95px;
             height: 48px;
-            top: 150%;
+            top: 80%;
             left: 15%;
         }
 
@@ -190,11 +176,10 @@
             left: 20px;
         }
 
-        /* 追加の雲 */
         .cloud9 {
             width: 65px;
             height: 32px;
-            top: 180%;
+            top: 120%;
             left: 50%;
         }
 
@@ -208,7 +193,7 @@
         .cloud10 {
             width: 110px;
             height: 55px;
-            top: 250%;
+            top: 150%;
             left: 30%;
         }
 
@@ -217,129 +202,6 @@
             height: 85px;
             top: -42px;
             left: 25px;
-        }
-
-        .mountain {
-            position: absolute;
-            width: 0;
-            height: 0;
-            border-style: solid;
-            z-index: 2;
-        }
-
-        /* 手前の地面（画面下部に常に表示） */
-        .mountain1 {
-            position: fixed;
-            left: 0%;
-            bottom: 0;
-            border-left: 200px solid transparent;
-            border-right: 200px solid transparent;
-            border-bottom: 80px solid #2d5016;
-            z-index: 3;
-        }
-
-        .mountain2 {
-            position: fixed;
-            left: 30%;
-            bottom: 0;
-            border-left: 150px solid transparent;
-            border-right: 150px solid transparent;
-            border-bottom: 60px solid #1a3009;
-            z-index: 3;
-        }
-
-        .mountain3 {
-            position: fixed;
-            right: 0%;
-            bottom: 0;
-            border-left: 250px solid transparent;
-            border-right: 250px solid transparent;
-            border-bottom: 100px solid #2d5016;
-            z-index: 3;
-        }
-
-        /* 山を背景の上部から中部に配置（上から下に流れる） */
-        .mountain4 {
-            left: 10%;
-            top: 10%;
-            border-left: 80px solid transparent;
-            border-right: 80px solid transparent;
-            border-bottom: 60px solid #4a6b2a;
-            opacity: 0.8;
-        }
-
-        .mountain5 {
-            right: 15%;
-            top: 15%;
-            border-left: 100px solid transparent;
-            border-right: 100px solid transparent;
-            border-bottom: 80px solid #3a5520;
-            opacity: 0.7;
-        }
-
-        .mountain6 {
-            left: 60%;
-            top: 20%;
-            border-left: 70px solid transparent;
-            border-right: 70px solid transparent;
-            border-bottom: 50px solid #4a6b2a;
-            opacity: 0.8;
-        }
-
-        /* 中程の山並み */
-        .mountain7 {
-            left: 5%;
-            top: 40%;
-            border-left: 120px solid transparent;
-            border-right: 120px solid transparent;
-            border-bottom: 90px solid #5a7b3a;
-            opacity: 0.6;
-        }
-
-        .mountain8 {
-            right: 10%;
-            top: 45%;
-            border-left: 90px solid transparent;
-            border-right: 90px solid transparent;
-            border-bottom: 70px solid #4a6b2a;
-            opacity: 0.6;
-        }
-
-        .mountain9 {
-            left: 40%;
-            top: 50%;
-            border-left: 110px solid transparent;
-            border-right: 110px solid transparent;
-            border-bottom: 85px solid #5a7b3a;
-            opacity: 0.5;
-        }
-
-        /* 遠くの山並み */
-        .mountain10 {
-            left: 20%;
-            top: 100%;
-            border-left: 140px solid transparent;
-            border-right: 140px solid transparent;
-            border-bottom: 100px solid #6a8b4a;
-            opacity: 0.4;
-        }
-
-        .mountain11 {
-            right: 25%;
-            top: 120%;
-            border-left: 160px solid transparent;
-            border-right: 160px solid transparent;
-            border-bottom: 120px solid #5a7b3a;
-            opacity: 0.3;
-        }
-
-        .mountain12 {
-            left: 50%;
-            top: 150%;
-            border-left: 100px solid transparent;
-            border-right: 100px solid transparent;
-            border-bottom: 80px solid #6a8b4a;
-            opacity: 0.3;
         }
 
         #shuriken {
@@ -498,14 +360,6 @@
             <div class="cloud cloud8"></div>
             <div class="cloud cloud9"></div>
             <div class="cloud cloud10"></div>
-            <div class="mountain mountain1"></div>
-            <div class="mountain mountain2"></div>
-            <div class="mountain mountain3"></div>
-            <div class="mountain mountain4"></div>
-            <div class="mountain mountain5"></div>
-            <div class="mountain mountain6"></div>
-            <div class="mountain mountain7"></div>
-            <div class="mountain mountain8"></div>
         </div>
 
         <div id="instructions">
