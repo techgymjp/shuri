@@ -65,7 +65,7 @@
         .cloud1 {
             width: 60px;
             height: 30px;
-            top: 15%;
+            top: 3%;
             left: 20%;
         }
 
@@ -79,7 +79,7 @@
         .cloud2 {
             width: 80px;
             height: 40px;
-            top: 25%;
+            top: 8%;
             left: 70%;
         }
 
@@ -93,7 +93,7 @@
         .cloud3 {
             width: 100px;
             height: 50px;
-            top: 35%;
+            top: 15%;
             left: 40%;
         }
 
@@ -107,7 +107,7 @@
         .cloud4 {
             width: 70px;
             height: 35px;
-            top: 45%;
+            top: 25%;
             left: 10%;
         }
 
@@ -121,7 +121,7 @@
         .cloud5 {
             width: 90px;
             height: 45px;
-            top: 55%;
+            top: 35%;
             left: 60%;
         }
 
@@ -135,7 +135,7 @@
         .cloud6 {
             width: 75px;
             height: 38px;
-            top: 65%;
+            top: 45%;
             left: 25%;
         }
 
@@ -144,6 +144,34 @@
             height: 55px;
             top: -28px;
             left: 12px;
+        }
+
+        .cloud7 {
+            width: 85px;
+            height: 42px;
+            top: 60%;
+            left: 80%;
+        }
+
+        .cloud7:before {
+            width: 65px;
+            height: 65px;
+            top: -32px;
+            left: 18px;
+        }
+
+        .cloud8 {
+            width: 95px;
+            height: 48px;
+            top: 75%;
+            left: 15%;
+        }
+
+        .cloud8:before {
+            width: 75px;
+            height: 75px;
+            top: -38px;
+            left: 20px;
         }
 
         .mountain {
@@ -156,7 +184,7 @@
 
         .mountain1 {
             left: 10%;
-            top: 85%;
+            top: 92%;
             border-left: 80px solid transparent;
             border-right: 80px solid transparent;
             border-bottom: 120px solid #2d5016;
@@ -164,7 +192,7 @@
 
         .mountain2 {
             left: 40%;
-            top: 80%;
+            top: 90%;
             border-left: 100px solid transparent;
             border-right: 100px solid transparent;
             border-bottom: 150px solid #1a3009;
@@ -172,7 +200,7 @@
 
         .mountain3 {
             right: 20%;
-            top: 87%;
+            top: 93%;
             border-left: 60px solid transparent;
             border-right: 60px solid transparent;
             border-bottom: 90px solid #2d5016;
@@ -180,7 +208,7 @@
 
         .mountain4 {
             left: 70%;
-            top: 82%;
+            top: 91%;
             border-left: 70px solid transparent;
             border-right: 70px solid transparent;
             border-bottom: 110px solid #1a3009;
@@ -188,10 +216,18 @@
 
         .mountain5 {
             left: 25%;
-            top: 88%;
+            top: 94%;
             border-left: 50px solid transparent;
             border-right: 50px solid transparent;
             border-bottom: 80px solid #2d5016;
+        }
+
+        .mountain6 {
+            right: 45%;
+            top: 89%;
+            border-left: 90px solid transparent;
+            border-right: 90px solid transparent;
+            border-bottom: 140px solid #1a3009;
         }
 
         #shuriken {
@@ -346,11 +382,14 @@
             <div class="cloud cloud4"></div>
             <div class="cloud cloud5"></div>
             <div class="cloud cloud6"></div>
+            <div class="cloud cloud7"></div>
+            <div class="cloud cloud8"></div>
             <div class="mountain mountain1"></div>
             <div class="mountain mountain2"></div>
             <div class="mountain mountain3"></div>
             <div class="mountain mountain4"></div>
             <div class="mountain mountain5"></div>
+            <div class="mountain mountain6"></div>
         </div>
 
         <div id="instructions">
@@ -412,14 +451,69 @@
                 this.shurikenScale = 1;
                 this.altitude = 0;
                 
+                // 音声関連
+                this.audioContext = null;
+                this.sounds = {};
+                
                 this.maxDistanceDisplay.textContent = `最高記録: ${this.maxDistance}m`;
                 
                 this.bindEvents();
+                this.initAudio();
+            }
+
+            async initAudio() {
+                try {
+                    // AudioContextは最初のユーザーインタラクションで初期化する必要がある
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    
+                    // 音声ファイルをプリロード
+                    await this.loadSound('start', 'start.mp3');
+                    await this.loadSound('kick', 'kick.mp3');
+                    await this.loadSound('goal', 'goal.mp3');
+                } catch (error) {
+                    console.log('音声の初期化に失敗しました:', error);
+                }
+            }
+
+            async loadSound(name, url) {
+                try {
+                    const response = await fetch(url);
+                    const arrayBuffer = await response.arrayBuffer();
+                    const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
+                    this.sounds[name] = audioBuffer;
+                } catch (error) {
+                    console.log(`音声ファイル ${url} の読み込みに失敗しました:`, error);
+                    // 音声ファイルが見つからない場合でもゲームは続行
+                }
+            }
+
+            playSound(name) {
+                try {
+                    if (this.audioContext && this.sounds[name]) {
+                        // AudioContextが停止している場合は再開
+                        if (this.audioContext.state === 'suspended') {
+                            this.audioContext.resume();
+                        }
+                        
+                        const source = this.audioContext.createBufferSource();
+                        source.buffer = this.sounds[name];
+                        source.connect(this.audioContext.destination);
+                        source.start(0);
+                    }
+                } catch (error) {
+                    console.log(`音声 ${name} の再生に失敗しました:`, error);
+                }
             }
 
             bindEvents() {
-                this.startButton.addEventListener('click', () => this.startGame());
-                this.restartButton.addEventListener('click', () => this.restartGame());
+                this.startButton.addEventListener('click', () => {
+                    this.playSound('start'); // ボタン音を再生
+                    this.startGame();
+                });
+                this.restartButton.addEventListener('click', () => {
+                    this.playSound('start'); // ボタン音を再生
+                    this.restartGame();
+                });
                 
                 // デバイスの向きの変更を検知
                 window.addEventListener('orientationchange', () => {
@@ -429,6 +523,11 @@
 
             async startGame() {
                 try {
+                    // AudioContextを初期化（ユーザーインタラクション後）
+                    if (!this.audioContext) {
+                        await this.initAudio();
+                    }
+                    
                     // 加速度センサーの許可を求める
                     if (typeof DeviceMotionEvent.requestPermission === 'function') {
                         const permission = await DeviceMotionEvent.requestPermission();
@@ -498,6 +597,9 @@
             throwShuriken(power) {
                 // 投げる力に基づいて初期速度を設定（より大きな値）
                 this.velocity = power * 5;
+                
+                // 手裏剣投げ音を再生
+                this.playSound('kick');
                 
                 // 手裏剣を回転させる
                 this.shuriken.querySelector('.shuriken-star').classList.add('rotating');
@@ -595,6 +697,9 @@
 
             endGame() {
                 this.isPlaying = false;
+                
+                // 着地音を再生
+                this.playSound('goal');
                 
                 // 加速度センサーのリスナーを削除
                 window.removeEventListener('devicemotion', this.handleMotion);
